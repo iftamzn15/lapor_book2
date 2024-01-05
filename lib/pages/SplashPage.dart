@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatelessWidget {
@@ -13,17 +14,26 @@ class SplashFull extends StatefulWidget {
   const SplashFull({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SplashPage();
+  State<StatefulWidget> createState() => _SplashPageState();
 }
 
-class _SplashPage extends State<SplashFull> {
+class _SplashPageState extends State<SplashFull> {
+  final _auth = FirebaseAuth.instance;
+
   @override
   void initState() {
     super.initState();
+    User? user = _auth.currentUser;
 
-    Future.delayed(Duration.zero, () {
-      Navigator.pushReplacementNamed(context, '/login');
-    });
+    if (user != null) {
+      Future.delayed(Duration.zero, () {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      });
+    } else {
+      Future.delayed(Duration.zero, () {
+        Navigator.pushReplacementNamed(context, '/login');
+      });
+    }
   }
 
   @override

@@ -126,14 +126,14 @@ class _AddFormPageState extends State<AddFormPage> {
     setState(() {
       _isLoading = true;
     });
-    try{
+    try {
       CollectionReference laporanCollection = _firestore.collection('laporan');
 
       Timestamp timestamp = Timestamp.fromDate(DateTime.now());
 
       String url = await uploadImage();
 
-      String currentLocation = await getCurrentLocation().then((value){
+      String currentLocation = await getCurrentLocation().then((value) {
         return '${value.latitude},${value.longitude}';
       });
 
@@ -141,17 +141,17 @@ class _AddFormPageState extends State<AddFormPage> {
       final id = laporanCollection.doc().id;
 
       await laporanCollection.doc(id).set({
-        'uid' : _auth.currentUser!.uid,
-        'docId' : id,
-        'judul' : judul,
-        'instansi' : instansi,
-        'deskripsi' : deskripsi,
-        'gambar' : url,
-        'nama' : akun.nama,
-        'status' : 'Posted',
-        'tanggal' : timestamp,
-        'maps' : maps,
-      }).catchError((e){
+        'uid': _auth.currentUser!.uid,
+        'docId': id,
+        'judul': judul,
+        'instansi': instansi,
+        'deskripsi': deskripsi,
+        'gambar': url,
+        'nama': akun.nama,
+        'status': 'Posted',
+        'tanggal': timestamp,
+        'maps': maps,
+      }).catchError((e) {
         throw e;
       });
       Navigator.popAndPushNamed(context, '/dashboard');
@@ -168,7 +168,9 @@ class _AddFormPageState extends State<AddFormPage> {
   Widget build(BuildContext context) {
     final arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
     final Akun akun = arguments['akun'];
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: primaryColor,
