@@ -136,7 +136,7 @@ class _ListItemState extends State<ListItem> {
                           BorderRadius.only(bottomRight: Radius.circular(8)),
                     ),
                     child: Text(
-                      DateFormat('dd/MM/yyyy').format(widget.laporan.tanggal),
+                      "${widget.laporan.likes == null ? 0 : widget.laporan.likes?.length} Likes",
                       style: headerStyle(level: 5, dark: false),
                     ),
                   ),

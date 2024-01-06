@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lapor_book/components/status_dialog.dart';
@@ -15,6 +16,11 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  final _firestore = FirebaseFirestore.instance;
+
+  bool isShow = true;
+  late Laporan laporan;
+
   Future launch(String url) async {
     if (url == '') return;
     if (!await launchUrl(Uri.parse(url))) {
@@ -28,7 +34,41 @@ class _DetailPageState extends State<DetailPage> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     final Akun akun = arguments['akun'];
-    final Laporan laporan = arguments['laporan'];
+
+    setState(() {
+      laporan = arguments['laporan'];
+    });
+
+    laporan.likes?.forEach((element) {
+      if (element.email == akun.email) {
+        print(element.email);
+        setState(() {
+          isShow = false;
+        });
+      }
+    });
+
+    void addLikes() async {
+      CollectionReference transaksiCollection =
+          _firestore.collection('laporan');
+      try {
+        await transaksiCollection.doc(laporan.docId).update({
+          'likes': FieldValue.arrayUnion([
+            {
+              'email': akun.email,
+              'nama': akun.nama,
+              'timestamp': DateTime.now()
+            }
+          ])
+        });
+
+        setState(() {
+          isShow = !isShow;
+        });
+      } catch (e) {
+        print(e);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -39,6 +79,14 @@ class _DetailPageState extends State<DetailPage> {
         ),
         centerTitle: true,
       ),
+      floatingActionButton: isShow
+          ? FloatingActionButton(
+              backgroundColor: Colors.orangeAccent,
+              onPressed: () {
+                addLikes();
+              },
+              child: Icon(Icons.favorite))
+          : null,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(

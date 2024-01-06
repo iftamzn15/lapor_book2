@@ -25,19 +25,28 @@ class _AllLaporanState extends State<AllLaporan> {
       setState(() {
         listLaporan.clear();
         for (var documents in querySnapshot.docs) {
+          List<dynamic>? likesData = documents.data()['likes'];
+
+          List<Likes>? listLike = likesData?.map((e) {
+            return Likes(
+                email: e['email'],
+                nama: e['nama'],
+                timestamp: e['timestamp'].toDate());
+          }).toList();
+
           listLaporan.add(
             Laporan(
-              uid: documents.data()['uid'],
-              docId: documents.data()['docId'],
-              judul: documents.data()['judul'],
-              instansi: documents.data()['instansi'],
-              nama: documents.data()['nama'],
-              status: documents.data()['status'],
-              tanggal: documents.data()['tanggal'].toDate(),
-              maps: documents.data()['maps'],
-              deskripsi: documents.data()['deskripsi'],
-              gambar: documents.data()['gambar'],
-            ),
+                uid: documents.data()['uid'],
+                docId: documents.data()['docId'],
+                judul: documents.data()['judul'],
+                instansi: documents.data()['instansi'],
+                nama: documents.data()['nama'],
+                status: documents.data()['status'],
+                tanggal: documents.data()['tanggal'].toDate(),
+                maps: documents.data()['maps'],
+                deskripsi: documents.data()['deskripsi'],
+                gambar: documents.data()['gambar'],
+                likes: listLike),
           );
         }
       });
